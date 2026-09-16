@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Form and search views are identical across 17 / 18 / 19 -->
+
+    <record id="view_web_shortcut_form" model="ir.ui.view">
+        <field name="name">web.shortcut.form</field>
+        <field name="model">web.shortcut</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name" string="Shortcut"/>
+                        <h1><field name="name" placeholder="e.g. Open Contacts"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="hotkey" widget="hotkey_capture"/>
+                            <field name="sequence"/>
+                            <field name="bypass_editable"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="target_type" widget="radio"/>
+                            <field name="command"
+                                   invisible="target_type != 'command'"
+                                   required="target_type == 'command'"/>
+                            <field name="view_type"
+                                   invisible="target_type != 'view'"
+                                   required="target_type == 'view'"/>
+                            <field name="action_id"
+                                   invisible="target_type != 'action'"
+                                   required="target_type == 'action'"/>
+                            <field name="menu_id"
+                                   invisible="target_type != 'menu'"
+                                   required="target_type == 'menu'"/>
+                            <field name="url"
+                                   invisible="target_type != 'url'"
+                                   required="target_type == 'url'"
+                                   placeholder="https://..."/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Availability">
+                        <field name="user_ids" widget="many2many_tags"
+                               placeholder="Leave empty for all users"/>
+                        <field name="group_ids" widget="many2many_tags"
+                               placeholder="Leave empty for all groups"/>
+                    </group>
+                    <div class="alert alert-info" role="alert">
+                        <p class="mb-1">
+                            Prefer <b>alt+shift+KEY</b> to avoid clashing with Odoo's built-in
+                            shortcuts. Reload the page (or use the systray button) after changing
+                            shortcuts.
+                        </p>
+                        <p class="mb-0">
+                            <b>UI Command</b> applies to the view currently on screen (new, save,
+                            delete, next view, ...). <b>Switch View</b> jumps straight to a given
+                            view type of the current action, when that view exists.
+                        </p>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_web_shortcut_search" model="ir.ui.view">
+        <field name="name">web.shortcut.search</field>
+        <field name="model">web.shortcut</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="hotkey"/>
+                <field name="command"/>
+                <filter name="filter_inactive" string="Archived"
+                        domain="[('active','=',False)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_target" string="Target Type"
+                            context="{'group_by': 'target_type'}"/>
+                    <filter name="group_command" string="Command"
+                            context="{'group_by': 'command'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--
+        The list view and the window action are built in Python because the
+        root tag differs between versions: <tree> on Odoo 17, <list> on 18/19.
+        Shipping either one as static XML breaks the parser on the other.
+    -->
+    <function model="web.shortcut" name="_install_version_views"/>
+
+    <!-- Fixes hotkeys stored with the old (never matching) modifier order. -->
+    <function model="web.shortcut" name="_renormalize_hotkeys"/>
+
+    <!-- Ready-to-use set of shortcuts, seeded on first install only. -->
+    <function model="web.shortcut" name="_install_default_shortcuts"/>
+
+    <!--
+        Visible section under Settings. base.menu_custom (Technical) carries
+        base.group_no_one, so a menu placed there only shows in developer mode.
+    -->
+    <menuitem id="menu_web_shortcut_root"
+              name="Shortcuts"
+              parent="base.menu_administration"
+              sequence="80"
+              groups="base.group_system"/>
+
+    <menuitem id="menu_web_shortcut"
+              name="Keyboard Shortcuts"
+              parent="menu_web_shortcut_root"
+              action="action_web_shortcut"
+              sequence="10"
+              groups="base.group_system"/>
+
+    <!-- Kept under Technical as well, for users used to finding it there. -->
+    <menuitem id="menu_web_shortcut_technical"
+              name="Keyboard Shortcuts"
+              parent="base.menu_custom"
+              action="action_web_shortcut"
+              sequence="90"
+              groups="base.group_system"/>
+
+</odoo>

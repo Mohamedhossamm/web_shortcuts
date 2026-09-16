@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="web_shortcuts.HotkeyCaptureField">
+        <div class="o_field_hotkey_capture w-100">
+            <div class="d-flex align-items-center gap-2">
+                <input type="text"
+                       t-ref="input"
+                       class="o_input o_field_hotkey_input"
+                       t-att-class="{ 'o_hotkey_capturing': state.capturing }"
+                       t-att-value="display"
+                       t-att-placeholder="placeholder"
+                       readonly="readonly"
+                       t-on-focus="() => this.onFocus()"
+                       t-on-blur="() => this.onBlur()"
+                       t-on-keydown="(ev) => this.onKeydown(ev)"/>
+                <button t-if="!props.readonly and value"
+                        type="button"
+                        class="btn btn-link p-0 text-muted"
+                        title="Clear"
+                        tabindex="-1"
+                        t-on-click="() => this.onClear()">
+                    <i class="fa fa-times"/>
+                </button>
+            </div>
+            <small t-if="state.error" class="text-danger" t-esc="state.error"/>
+            <small t-elif="state.capturing" class="text-muted">
+                Press the combination now. Esc to cancel.
+            </small>
+        </div>
+    </t>
+
+</templates>
