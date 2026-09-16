@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_web_shortcut_user,web.shortcut.user,model_web_shortcut,base.group_user,1,0,0,0
+access_web_shortcut_manager,web.shortcut.manager,model_web_shortcut,base.group_system,1,1,1,1

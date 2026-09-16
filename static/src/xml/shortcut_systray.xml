@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="web_shortcuts.ShortcutSystray">
+        <div class="o_web_shortcuts_systray position-relative" t-ref="root">
+            <button type="button"
+                    class="btn btn-link o_nav_entry text-reset"
+                    title="Keyboard Shortcuts"
+                    t-on-click="() => this.toggle()">
+                <i class="fa fa-keyboard-o" role="img" aria-label="Keyboard Shortcuts"/>
+            </button>
+            <div t-if="state.open"
+                 class="o_web_shortcuts_panel position-absolute end-0 bg-view border rounded shadow p-2">
+                <div class="d-flex align-items-center justify-content-between mb-1 px-1">
+                    <span class="fw-bold">Shortcuts</span>
+                    <button type="button" class="btn btn-sm btn-link p-0"
+                            title="Reload" t-on-click="() => this.onReload()">
+                        <i class="fa fa-refresh"/>
+                    </button>
+                </div>
+                <div t-if="!state.items.length" class="text-muted small px-1 py-2">
+                    No shortcut configured.
+                </div>
+                <div t-foreach="state.items" t-as="item" t-key="item.id"
+                     class="d-flex align-items-center justify-content-between gap-3 px-1 py-1 o_web_shortcuts_item"
+                     t-on-click="() => this.onItemClick(item)">
+                    <span class="text-truncate">
+                        <i class="fa fa-fw me-1 text-muted" t-att-class="iconFor(item)"/>
+                        <t t-esc="item.name"/>
+                    </span>
+                    <kbd class="small" t-esc="formatHotkey(item.hotkey)"/>
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>

@@ -1,0 +1,30 @@
+.o_web_shortcuts_systray {
+    .o_web_shortcuts_panel {
+        top: 100%;
+        min-width: 260px;
+        max-height: 60vh;
+        overflow-y: auto;
+        z-index: 1050;
+    }
+
+    .o_web_shortcuts_item {
+        cursor: pointer;
+        border-radius: 3px;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.06);
+        }
+    }
+}
+
+.o_field_hotkey_capture {
+    .o_field_hotkey_input {
+        cursor: pointer;
+        font-family: var(--font-monospace, monospace);
+
+        &.o_hotkey_capturing {
+            outline: 2px solid var(--primary, #714b67);
+            outline-offset: 1px;
+        }
+    }
+}
